@@ -88,11 +88,7 @@ namespace Matrix
                 return null;
             }
 
-            var collapse = Collapse(a, b);
-            var intersection = Intersection(a, b);
-            var matrix = Difference(collapse, intersection);
-
-            return matrix;
+            return Difference(Collapse(a, b), Intersection(a, b)); ;
         }
 
         //обернена
