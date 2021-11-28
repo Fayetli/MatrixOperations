@@ -39,12 +39,25 @@ namespace Matrix
     {
         static private void Lab8()
         {
-            int[,] a = {
+            var o = new MatrixOutput();
+
+            int[,] test = {
                 { 1, 1, 1, 1},
                 { 0, 1, 0, 0},
                 { 1, 1, 1, 0},
                 { 1, 0, 1, 1}
             };
+
+            int[,] a = {
+                { 1, 0, 1, 0, 1, 0},
+                { 1, 1, 0, 1, 0, 1},
+                { 0, 1, 1, 0, 0, 1},
+                { 0, 0, 0, 1, 0, 0},
+                { 1, 0, 1, 0, 1, 0},
+                { 1, 1, 0, 1, 0, 1},
+            };
+
+            o.Output(a, "R^S");
             MA.ChoiceFunc(a);
         }
         static private void Lab7()

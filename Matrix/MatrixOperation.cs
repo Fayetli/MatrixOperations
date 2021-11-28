@@ -347,16 +347,15 @@ namespace Matrix
             ChoiceFunction(strict);
         }
 
-        private static void ChoiceFunction(int[,] strict)
+        public static void ChoiceFunction(int[,] strict)
         {
             var nums = new int[strict.GetLength(0)];
             for (int i = 0; i < nums.Length; i++)
                 nums[i] = i;
 
-            for(int i = 1; i < strict.Length; i++)
+            for(int i = 1; i < strict.GetLength(0) + 1; i++)
             {
                 var l = GetComboByN(nums, i);
-                //l.ForEach(ml => Console.WriteLine(ml.Output()));
                 
                 if(l.Count != 0)
                 {
@@ -379,15 +378,18 @@ namespace Matrix
         private static List<int> GetCMaxR(int[,] a, List<int> l)
         {
             var lv = new Dictionary<int, int>();
-            for(int i = 0; i < a.Length; i++)
+            for(int i = l.First(); i < l.Last() + 1; i++)
             {
                 if(l.Any(v => v == i))
                 {
                     var sum = 0;
-                    for(int j = 0; j < a.GetLength(1); j++)
+                    for(int j = l.First(); j < l.Last() + 1; j++)
                     {
-                        if (a[i, j] == 1)
-                            sum++;
+                        if (l.Any(v => v == j))
+                        {
+                            if (a[i, j] == 1)
+                                sum++;
+                        }
                     }
                     lv.Add(i, sum);
                 }
