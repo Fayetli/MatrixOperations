@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Matrix
 {
@@ -340,5 +341,130 @@ namespace Matrix
         public static int[,] Tolerance(int[,] a)
             => Addition(Difference(Collapse(a, Invert(a)), Intersection(a, Invert(a))), (int v) => v == 0 ? 1 : 0);
 
+        public static void ChoiceFunc(int[,] a)
+        {
+            var strict = StrictAdvantage(a);
+            ChoiceFunction(strict);
+        }
+
+        private static void ChoiceFunction(int[,] strict)
+        {
+            var nums = new int[strict.GetLength(0)];
+            for (int i = 0; i < nums.Length; i++)
+                nums[i] = i;
+
+            for(int i = 1; i < strict.Length; i++)
+            {
+                var l = GetComboByN(nums, i);
+                //l.ForEach(ml => Console.WriteLine(ml.Output()));
+                
+                if(l.Count != 0)
+                {
+                    for(int j = 0; j < l.Count; j++)
+                    {
+                        var result = GetCMaxR(strict, l[j]);
+                        Console.Write("C({ ");
+                        for(int k = 0; k < l[j].Count; k++)
+                            Console.Write($"x{l[j][k] + 1}, ");
+                        Console.Write("}) = {");
+                        for (int k = 0; k < result.Count; k++)
+                            Console.Write($"x{result[k] + 1}, ");
+                        Console.Write("}");
+                        Console.WriteLine();
+                    }
+                }
+            }
+        }
+
+        private static List<int> GetCMaxR(int[,] a, List<int> l)
+        {
+            var lv = new Dictionary<int, int>();
+            for(int i = 0; i < a.Length; i++)
+            {
+                if(l.Any(v => v == i))
+                {
+                    var sum = 0;
+                    for(int j = 0; j < a.GetLength(1); j++)
+                    {
+                        if (a[i, j] == 1)
+                            sum++;
+                    }
+                    lv.Add(i, sum);
+                }
+            }
+            var max = 0;
+            foreach(var item in lv)
+                if (item.Value > max)
+                    max = item.Value;
+
+            var result = new List<int>();
+            foreach (var item in lv)
+                if (item.Value == max)
+                    result.Add(item.Key);
+
+            return result;
+        }
+
+        private static bool CompareList(List<int> a, List<int> b)
+        {
+            if (a.Count != b.Count)
+                return false;
+
+            for (int i = 0; i < a.Count; i++)
+                if (a[i] != b[i])
+                    return false;
+            return true;
+        }
+
+        private static bool HasEqualElem(List<int> a)
+        {
+            for (int i = 0; i < a.Count; i++)
+                for (int j = i + 1; j < a.Count; j++)
+                    if (a[i] == a[j])
+                        return true;
+            return false;
+        }
+
+        private static void Combinations(int[] list, int[] buffer, int order,
+                                                                List<List<int>> container)
+        {
+            if (order < buffer.Length)
+                for (int i = 0; i < list.Length; i++)
+                {
+                    buffer[order] = list[i];
+                    Combinations(list, buffer, order + 1, container);
+                }
+            else
+            {
+                container.Add(new List<int>());
+                for (int i = 0; i < buffer.Length; i++)
+                    container.Last().Add(buffer[i]);
+            }
+        }
+
+        private static List<List<int>> GetComboByN(int[] nums, int n)
+        {
+            var l = new List<List<int>>();
+
+            Combinations(nums, new int[n], 0, l);
+            l.ForEach(ml => ml.Sort());
+
+            for (int i = 0; i < l.Count; i++) 
+                for (int j = i + 1; j < l.Count; j++)
+                    if (j < l.Count && CompareList(l[i], l[j]))
+                    {
+                        l.RemoveAt(j);
+                        j--;
+                    }
+
+            for (int i = 0; i < l.Count; i++)
+                if (i < l.Count && HasEqualElem(l[i]))
+                {
+                    l.RemoveAt(i);
+                    i--;
+                }
+
+            return l;
+        }
     }
 }

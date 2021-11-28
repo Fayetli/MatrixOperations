@@ -37,6 +37,16 @@ namespace Matrix
 
     class Program
     {
+        static private void Lab8()
+        {
+            int[,] a = {
+                { 1, 1, 1, 1},
+                { 0, 1, 0, 0},
+                { 1, 1, 1, 0},
+                { 1, 0, 1, 1}
+            };
+            MA.ChoiceFunc(a);
+        }
         static private void Lab7()
         {
             var o = new MatrixOutput();
@@ -138,7 +148,7 @@ namespace Matrix
         }
         static void Main(string[] args)
         {
-            Lab7();
+            Lab8();
         }
     }
 }
