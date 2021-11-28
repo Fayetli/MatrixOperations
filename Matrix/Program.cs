@@ -1,8 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using MA = Matrix.MatrixOperation;
 
 namespace Matrix
 {
+    public static class ListHelpres
+    {
+        public static string Output(this List<int> l)
+        {
+            var str = "( ";
+            for (int i = 0; i < l.Count; i++)
+                str += l[i] + " ";
+            str += ")";
+            return str;
+        }
+    }
+
     class MatrixOutput
     {
         public void Output<T>(T[,] m, string label)
@@ -18,11 +31,62 @@ namespace Matrix
                     Console.Write(m[i, j] + " ");
                 Console.WriteLine();
             }
+
         }
     }
+
     class Program
     {
-        static void Main(string[] args)
+        static private void Lab7()
+        {
+            var o = new MatrixOutput();
+
+            int[,] a = {
+                { 1, 0, 1, 1, 0},
+                { 0, 1, 1, 1, 0},
+                { 1, 1, 0, 1, 1},
+                { 1, 1, 1, 1, 1},
+                { 0, 0, 1, 1, 0}
+            };
+
+            o.Output(a, "Matrix A:");
+
+            Console.WriteLine($"Max is {MA.Max(a).Output()}");
+            Console.WriteLine($"Min is {MA.Min(a).Output()}");
+            Console.WriteLine($"Major is {MA.Major(a).Output()}");
+            Console.WriteLine($"Minor is {MA.Minor(a).Output()}");
+            o.Output(MA.Equivalent(a), $"Equivalent is:");
+            o.Output(MA.StrictAdvantage(a), $"Strict Advantage is:");
+            o.Output(MA.Tolerance(a), $"Tolerance is:");
+
+        }
+        static private void Lab6()
+        {
+            var o = new MatrixOutput();
+
+            int[,] a = {
+                { 1, 0, 1, 1, 0},
+                { 0, 1, 1, 1, 0},
+                { 1, 1, 0, 1, 1},
+                { 1, 1, 1, 1, 1},
+                { 0, 0, 1, 1, 0}
+            };
+
+            o.Output(a, "Matrix A:");
+
+            Console.WriteLine($"Reflexion is {MA.Reflexion(a)}");
+            Console.WriteLine($"Irreflexion is {MA.Irreflexion(a)}");
+            Console.WriteLine($"Symmetry is {MA.Symmetry(a)}");
+            Console.WriteLine($"Asymmetry is {MA.Asymmetry(a)}");
+            Console.WriteLine($"Antisymmetry is {MA.Antisymmetry(a)}");
+            Console.WriteLine($"Trans is {MA.Trans(a)}");
+            Console.WriteLine($"Antitrans is {MA.Antitrans(a)}");
+            Console.WriteLine($"StrongTrans is {MA.StrongTrans(a)}");
+            Console.WriteLine($"Connectivity is {MA.Connectivity(a)}");
+            Console.WriteLine($"Acyclivity is {MA.Acyclivity(a)}");
+
+        }
+        static private void Lab4()
         {
             var o = new MatrixOutput();
 
@@ -71,6 +135,10 @@ namespace Matrix
 
             var dual = MA.Dual(a, (int v) => v == 0 ? 1 : 0);
             o.Output(dual, "Dual:");
+        }
+        static void Main(string[] args)
+        {
+            Lab7();
         }
     }
 }
