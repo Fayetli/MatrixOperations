@@ -42,11 +42,18 @@ namespace Matrix
             var o = new MatrixOutput();
 
             int[,] test = {
-                { 1, 1, 1, 1},
                 { 0, 1, 0, 0},
-                { 1, 1, 1, 0},
-                { 1, 0, 1, 1}
+                { 0, 0, 0, 0},
+                { 0, 1, 0, 0},
+                { 0, 0, 1, 0}
             };
+
+            int[,] test2 = {
+                { 0, 1, 0},
+                { 0, 0, 0},
+                { 0, 1, 0}
+            };
+
 
             int[,] a = {
                 { 1, 0, 1, 0, 1, 0},
@@ -58,12 +65,18 @@ namespace Matrix
             };
 
             o.Output(a, "R^S");
-            MA.ChoiceFunc(a);
+            MA.ChoiceFuncByStrict(a);
         }
         static private void Lab7()
         {
             var o = new MatrixOutput();
 
+            int[,] test = {
+                { 1, 1, 0, 1},
+                { 0, 1, 0, 1},
+                { 0, 1, 1, 0},
+                { 1, 0, 1, 1},
+            };
             int[,] a = {
                 { 1, 0, 1, 1, 0},
                 { 0, 1, 1, 1, 0},
@@ -81,6 +94,7 @@ namespace Matrix
             o.Output(MA.Equivalent(a), $"Equivalent is:");
             o.Output(MA.StrictAdvantage(a), $"Strict Advantage is:");
             o.Output(MA.Tolerance(a), $"Tolerance is:");
+            o.Output(MA.Dominance(a), $"Dominance is:");
 
         }
         static private void Lab6()
@@ -90,9 +104,9 @@ namespace Matrix
             int[,] a = {
                 { 1, 0, 1, 1, 0},
                 { 0, 1, 1, 1, 0},
-                { 1, 1, 0, 1, 1},
                 { 1, 1, 1, 1, 1},
-                { 0, 0, 1, 1, 0}
+                { 1, 1, 1, 1, 1},
+                { 0, 0, 1, 1, 1}
             };
 
             o.Output(a, "Matrix A:");
@@ -107,8 +121,8 @@ namespace Matrix
             Console.WriteLine($"StrongTrans is {MA.StrongTrans(a)}");
             Console.WriteLine($"Connectivity is {MA.Connectivity(a)}");
             Console.WriteLine($"Acyclivity is {MA.Acyclivity(a)}");
-
         }
+
         static private void Lab4()
         {
             var o = new MatrixOutput();

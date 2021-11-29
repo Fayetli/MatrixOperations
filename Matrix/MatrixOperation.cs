@@ -244,7 +244,7 @@ namespace Matrix
         {
             for (int i = 0; i < a.GetLength(0); i++)
                 for (int j = 0; j < a.GetLength(1); j++)
-                    if (Compare(a[i, j], default(T)) && Compare(a[i, j], default(T)) && i != j)
+                    if (Compare(a[i, j], default(T)) && Compare(a[j, i], default(T)) && i != j)
                         return false;
             return true;
         }
@@ -272,8 +272,9 @@ namespace Matrix
             for (int i = 0; i < a.GetLength(0); i++)
                 if (a[x, i] == 1)
                 {
-                    path.Add(new C(x, i));
-                    if (NotCyclePath(path) == false || AsyncPath(a, path) == false)
+                    var p = new List<C>(path);
+                    p.Add(new C(x, i));
+                    if (NotCyclePath(p) == false || AsyncPath(a, p) == false)
                         return false;
                 }
             return true;
@@ -341,29 +342,32 @@ namespace Matrix
         public static int[,] Tolerance(int[,] a)
             => Addition(Difference(Collapse(a, Invert(a)), Intersection(a, Invert(a))), (int v) => v == 0 ? 1 : 0);
 
-        public static void ChoiceFunc(int[,] a)
+        public static int[,] Dominance(int[,] a)
+            => Difference(a, Equivalent(a));
+
+        public static void ChoiceFuncByDefault(int[,] a)
         {
             var strict = StrictAdvantage(a);
-            ChoiceFunction(strict);
+            ChoiceFuncByStrict(strict);
         }
 
-        public static void ChoiceFunction(int[,] strict)
+        public static void ChoiceFuncByStrict(int[,] strict)
         {
             var nums = new int[strict.GetLength(0)];
             for (int i = 0; i < nums.Length; i++)
                 nums[i] = i;
 
-            for(int i = 1; i < strict.GetLength(0) + 1; i++)
+            for (int i = 1; i < strict.GetLength(0) + 1; i++)
             {
                 var l = GetComboByN(nums, i);
-                
-                if(l.Count != 0)
+
+                if (l.Count != 0)
                 {
-                    for(int j = 0; j < l.Count; j++)
+                    for (int j = 0; j < l.Count; j++)
                     {
                         var result = GetCMaxR(strict, l[j]);
                         Console.Write("C({ ");
-                        for(int k = 0; k < l[j].Count; k++)
+                        for (int k = 0; k < l[j].Count; k++)
                             Console.Write($"x{l[j][k] + 1}, ");
                         Console.Write("}) = {");
                         for (int k = 0; k < result.Count; k++)
@@ -375,36 +379,61 @@ namespace Matrix
             }
         }
 
+        private static List<List<int>> GetCombWithTwo(List<int> l)
+        {
+            var result = new List<List<int>>();
+            for (int i = 0; i < l.Count; i++)
+                for (int j = i + 1; j < l.Count; j++)
+                    result.Add(new List<int> { l[i], l[j] });
+            return result;
+        }
+
         private static List<int> GetCMaxR(int[,] a, List<int> l)
         {
             var lv = new Dictionary<int, int>();
-            for(int i = l.First(); i < l.Last() + 1; i++)
+            if (l.Count <= 2)
             {
-                if(l.Any(v => v == i))
+                for (int i = l.First(); i < l.Last() + 1; i++)
                 {
-                    var sum = 0;
-                    for(int j = l.First(); j < l.Last() + 1; j++)
+                    if (l.Any(v => v == i))
                     {
-                        if (l.Any(v => v == j))
-                        {
-                            if (a[i, j] == 1)
-                                sum++;
-                        }
+                        var sum = 0;
+                        for (int j = l.First(); j < l.Last() + 1; j++)
+                            if (l.Any(v => v == j))
+                                if (a[i, j] == 1)
+                                    sum++;
+                        lv.Add(i, sum);
                     }
-                    lv.Add(i, sum);
                 }
+                var max = 0;
+                foreach (var item in lv)
+                    if (item.Value > max)
+                        max = item.Value;
+
+                var result = new List<int>();
+                foreach (var item in lv)
+                    if (item.Value == max)
+                        result.Add(item.Key);
+
+                return result;
             }
-            var max = 0;
-            foreach(var item in lv)
-                if (item.Value > max)
-                    max = item.Value;
+            else
+            {
+                var comb = GetCombWithTwo(l);
+                var result = new List<int>(l);
 
-            var result = new List<int>();
-            foreach (var item in lv)
-                if (item.Value == max)
-                    result.Add(item.Key);
+                for (int i = 0; i < comb.Count; i++)
+                {
+                    var curr = GetCMaxR(a, comb[i]);
 
-            return result;
+                    for (int j = 0; j < comb[i].Count; j++)
+                    {
+                        if (curr.Any(v => v == comb[i][j]) == false)
+                            result.Remove(comb[i][j]);
+                    }
+                }
+                return result;
+            }
         }
 
         private static bool CompareList(List<int> a, List<int> b)
@@ -451,7 +480,7 @@ namespace Matrix
             Combinations(nums, new int[n], 0, l);
             l.ForEach(ml => ml.Sort());
 
-            for (int i = 0; i < l.Count; i++) 
+            for (int i = 0; i < l.Count; i++)
                 for (int j = i + 1; j < l.Count; j++)
                     if (j < l.Count && CompareList(l[i], l[j]))
                     {
